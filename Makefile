@@ -6,7 +6,7 @@
 #    By: mvan-wij <mvan-wij@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/06/28 14:05:04 by mvan-wij      #+#    #+#                  #
-#    Updated: 2021/06/28 15:07:25 by mvan-wij      ########   odam.nl          #
+#    Updated: 2021/07/22 17:32:58 by mvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,8 +30,8 @@ LIBS += -lXext -lX11
 else
 LIBS += -framework OpenGL -framework AppKit
 endif
-HEADERS = libft/libft.h $(dir $(MINILIBX))/mlx.h src/constants.h
-SOURCES = src/fractol.c
+HEADERS = libft/libft.h $(dir $(MINILIBX))/mlx.h src/constants.h src/defs.h
+SOURCES = src/fractol.c src/mandelbrot.c
 
 ifdef BONUS
 SOURCES +=

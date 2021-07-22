@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:39:14 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/20 16:41:30 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/22 18:10:04 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "constants.h"
 #include "mlx.h"
 #include "libft.h"
+#include "defs.h"
 
 t_canvas	create_canvas(t_gui *gui, int width, int height)
 {
@@ -47,12 +48,6 @@ t_gui	create_gui(int width, int height, char *title)
 	gui.y_pos = 0;
 	return (gui);
 }
-
-typedef struct s_color {
-	double	r;
-	double	g;
-	double	b;
-}	t_color;
 
 char	*gui_get_pixel_data(t_canvas *canvas, size_t x, size_t y)
 {
@@ -103,53 +98,6 @@ t_color	pallette(int i, int max_i)
 	if (i == max_i)
 		return ((t_color){0, 0, 0});
 	return (rgb_from_hue(i));
-}
-
-void	draw_mandelbrot(t_gui *gui, double x, double y, double zoom, int max_i)
-{
-	const double	scalar = fmax(3.5 / gui->canvas.width, 2.0 / gui->canvas.height);
-	int				px;
-	int				py;
-	double			x0;
-	double			y0;
-
-	py = 0;
-	while (py < gui->canvas.height)
-	{
-		y0 = (((double)py + y) * scalar - 1) * zoom;
-		px = 0;
-		while (px < gui->canvas.width)
-		{
-			x0 = (((double)px + x) * scalar - 2.5) * zoom;
-			gui_set_pixel(px, py, mandlebrot_escape(x0, y0, max_i), gui);
-			px++;
-		}
-		py++;
-	}
-}
-
-t_color	mandlebrot_escape(double x0, double y0, int max_i)
-{
-	double	x1;
-	double	y1;
-	double	x2;
-	double	y2;
-	int		i;
-
-	x1 = 0;
-	y1 = 0;
-	x2 = 0;
-	y2 = 0;
-	i = 0;
-	while (x2 + y2 <= 4 && i < max_i)
-	{
-		y1 = 2 * x1 * y1 + y0;
-		x1 = x2 - y2 + x0;
-		x2 = x1 * x1;
-		y2 = y1 * y1;
-		i++;
-	}
-	return (pallette(i, max_i));
 }
 
 /*void	draw_image(t_gui *gui)
@@ -210,6 +158,17 @@ t_color	mandlebrot_escape(double x0, double y0, int max_i)
 }
 */
 
+void	get_mouse_coords(t_gui *gui, double *x_out, double *y_out)
+{
+	const double	scalar = fmax(3.5 / gui->canvas.width, 2.0 / gui->canvas.height);
+	int				x;
+	int				y;
+
+	mlx_mouse_get_pos(gui->mlx, gui->window, &x, &y);
+	*x_out = gui->x_pos + (((double)x * scalar) - 1.75) * gui->zoom;
+	*y_out = gui->y_pos + (((double)y * scalar) - 1.0) * gui->zoom;
+}
+
 int	loop_hook(t_gui *gui)
 {
 	if (gui->do_redraw && !gui->is_redrawing)
@@ -219,10 +178,17 @@ int	loop_hook(t_gui *gui)
 		printf("will redraw\n");
 		// draw_image(gui);
 		draw_mandelbrot(gui, gui->x_pos, gui->y_pos, gui->zoom, 1024);
+		// draw_mandelbrot(gui, gui->x_pos, gui->y_pos, gui->zoom, 128);
 		mlx_put_image_to_window(gui->mlx, gui->window, gui->canvas.img, 0, 0);
 		printf("did redraw\n");
 		gui->is_redrawing = 0;
 	}
+	// double x, y;
+	// get_mouse_coords(gui, &x, &y);
+	// printf("x: %lf, y: %lf\t", x, y);
+	// int x0, y0;
+	// mlx_mouse_get_pos(gui->mlx, gui->window, &x0, &y0);
+	// printf("x0: %i, y0: %i\n", x0, y0);
 	return (0);
 }
 
@@ -237,8 +203,8 @@ int	zoom(t_gui *gui, double amount)
 int	move(t_gui *gui, double x_amount, double y_amount)
 {
 	printf("move\n");
-	gui->x_pos += x_amount / gui->zoom;
-	gui->y_pos += y_amount / gui->zoom;
+	gui->x_pos += x_amount * gui->zoom;
+	gui->y_pos += y_amount * gui->zoom;
 	gui->do_redraw = 1;
 	return (0);
 }
@@ -257,19 +223,19 @@ int	key_hook(int keycode, t_gui *gui)
 	if (keycode == KEY_W)
 		return (zoom(gui, 1.1));
 	if (keycode == KEY_S)
-		return (zoom(gui, 1 / 1.1));
+		return (zoom(gui, 1.0 / 1.1));
 	if (keycode == KEY_A)
-		return (zoom(gui, 3));
+		return (zoom(gui, 3.0));
 	if (keycode == KEY_D)
-		return (zoom(gui, 1 / 3));
+		return (zoom(gui, 1.0 / 3.0));
 	if (keycode == KEY_UP)
-		return (move(gui, 0, -10));
+		return (move(gui, 0, -0.1));
 	if (keycode == KEY_DOWN)
-		return (move(gui, 0, 10));
+		return (move(gui, 0, 0.1));
 	if (keycode == KEY_LEFT)
-		return (move(gui, -10, 0));
+		return (move(gui, -0.1, 0));
 	if (keycode == KEY_RIGHT)
-		return (move(gui, 10, 0));
+		return (move(gui, 0.1, 0));
 	printf("unknown key: %i (%c)\n", keycode, keycode);
 	return (0);
 }
