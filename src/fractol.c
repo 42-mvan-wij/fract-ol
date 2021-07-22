@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:39:14 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/06/28 16:51:18 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/20 16:41:30 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 
 #include "constants.h"
 #include "mlx.h"
+#include "libft.h"
 
 t_canvas	create_canvas(t_gui *gui, int width, int height)
 {
@@ -40,48 +41,12 @@ t_gui	create_gui(int width, int height, char *title)
 	gui.canvas = create_canvas(&gui, width, height);
 	gui.window = mlx_new_window(gui.mlx, width, height, title);
 	gui.do_redraw = 1;
+	gui.is_redrawing = 0;
+	gui.zoom = 1;
+	gui.x_pos = -0.75;
+	gui.y_pos = 0;
 	return (gui);
 }
-
-#ifdef __APPLE__
-# define KEY_PRESS 2
-# define KEY_PRESS_MASK 1
-# define BUTTON_PRESS 4
-# define BUTTON_PRESS_MASK 1
-# define CROSS_PRESS 17
-# define CROSS_PRESS_MASK 1 << 17
-
-# define BUTTON_LEFT 1
-# define BUTTON_RIGHT 2
-# define BUTTON_MIDDLE 3
-# define BUTTON_SCROLL_UP 4
-# define BUTTON_SCROLL_DOWN 5
-
-# define KEY_ESC 53
-# define KEY_W 13
-# define KEY_A 0
-# define KEY_S 1
-# define KEY_D 2
-# define KEY_UP 126
-# define KEY_DOWN 125
-# define KEY_LEFT 123
-# define KEY_RIGHT 124
-#else
-# define KEY_PRESS 2
-# define KEY_PRESS_MASK 1
-# define CROSS_PRESS 33
-# define CROSS_PRESS_MASK 0
-
-# define KEY_ESC 65307
-# define KEY_W 119
-# define KEY_A 97
-# define KEY_S 115
-# define KEY_D 100
-# define KEY_LEFT 65361
-# define KEY_UP 65362
-# define KEY_DOWN 65364
-# define KEY_RIGHT 65363
-#endif
 
 typedef struct s_color {
 	double	r;
@@ -113,7 +78,7 @@ void	gui_set_pixel(size_t x, size_t y, t_color color, t_gui *gui)
 	pixel_data[bytes_per_pix - 3] = (uint8_t)color.r;
 }
 
-t_color rgb_from_hue(double hue)
+t_color	rgb_from_hue(double hue)
 {
 	int		region;
 	double	ff;
@@ -136,11 +101,58 @@ t_color rgb_from_hue(double hue)
 t_color	pallette(int i, int max_i)
 {
 	if (i == max_i)
-		return ((t_color){0,0,0});
+		return ((t_color){0, 0, 0});
 	return (rgb_from_hue(i));
 }
 
-void	draw_image(t_gui *gui)
+void	draw_mandelbrot(t_gui *gui, double x, double y, double zoom, int max_i)
+{
+	const double	scalar = fmax(3.5 / gui->canvas.width, 2.0 / gui->canvas.height);
+	int				px;
+	int				py;
+	double			x0;
+	double			y0;
+
+	py = 0;
+	while (py < gui->canvas.height)
+	{
+		y0 = (((double)py + y) * scalar - 1) * zoom;
+		px = 0;
+		while (px < gui->canvas.width)
+		{
+			x0 = (((double)px + x) * scalar - 2.5) * zoom;
+			gui_set_pixel(px, py, mandlebrot_escape(x0, y0, max_i), gui);
+			px++;
+		}
+		py++;
+	}
+}
+
+t_color	mandlebrot_escape(double x0, double y0, int max_i)
+{
+	double	x1;
+	double	y1;
+	double	x2;
+	double	y2;
+	int		i;
+
+	x1 = 0;
+	y1 = 0;
+	x2 = 0;
+	y2 = 0;
+	i = 0;
+	while (x2 + y2 <= 4 && i < max_i)
+	{
+		y1 = 2 * x1 * y1 + y0;
+		x1 = x2 - y2 + x0;
+		x2 = x1 * x1;
+		y2 = y1 * y1;
+		i++;
+	}
+	return (pallette(i, max_i));
+}
+
+/*void	draw_image(t_gui *gui)
 {
 	const double	x_scalar = 3.5 / gui->canvas.width;
 	const double	y_scalar = 2.0 / gui->canvas.height;
@@ -196,15 +208,38 @@ void	draw_image(t_gui *gui)
 		py++;
 	}
 }
+*/
 
 int	loop_hook(t_gui *gui)
 {
-	if (gui->do_redraw)
+	if (gui->do_redraw && !gui->is_redrawing)
 	{
+		gui->is_redrawing = 1;
 		gui->do_redraw = 0;
-		draw_image(gui);
+		printf("will redraw\n");
+		// draw_image(gui);
+		draw_mandelbrot(gui, gui->x_pos, gui->y_pos, gui->zoom, 1024);
 		mlx_put_image_to_window(gui->mlx, gui->window, gui->canvas.img, 0, 0);
+		printf("did redraw\n");
+		gui->is_redrawing = 0;
 	}
+	return (0);
+}
+
+int	zoom(t_gui *gui, double amount)
+{
+	printf("zoom\n");
+	gui->zoom /= amount;
+	gui->do_redraw = 1;
+	return (0);
+}
+
+int	move(t_gui *gui, double x_amount, double y_amount)
+{
+	printf("move\n");
+	gui->x_pos += x_amount / gui->zoom;
+	gui->y_pos += y_amount / gui->zoom;
+	gui->do_redraw = 1;
 	return (0);
 }
 
@@ -218,24 +253,38 @@ int	key_hook(int keycode, t_gui *gui)
 {
 	(void)gui;
 	if (keycode == KEY_ESC)
-		close_hook();
-	else
-		printf("unknown key: %i (%c)\n", keycode, keycode);
+		return (close_hook());
+	if (keycode == KEY_W)
+		return (zoom(gui, 1.1));
+	if (keycode == KEY_S)
+		return (zoom(gui, 1 / 1.1));
+	if (keycode == KEY_A)
+		return (zoom(gui, 3));
+	if (keycode == KEY_D)
+		return (zoom(gui, 1 / 3));
+	if (keycode == KEY_UP)
+		return (move(gui, 0, -10));
+	if (keycode == KEY_DOWN)
+		return (move(gui, 0, 10));
+	if (keycode == KEY_LEFT)
+		return (move(gui, -10, 0));
+	if (keycode == KEY_RIGHT)
+		return (move(gui, 10, 0));
+	printf("unknown key: %i (%c)\n", keycode, keycode);
 	return (0);
 }
 
-int	button_hook(int button, t_gui *gui)
+int	button_hook(int button, int _, int _2, t_gui *gui)
 {
+	(void)_, (void)_2;
+	printf("button: %i, gui: %p\n", button, gui);
 	(void)gui;
 	if (button == BUTTON_SCROLL_UP)
-	{
-		printf("up\n");
-		// zoom_in(gui);
-	}
-	else if (button == BUTTON_SCROLL_DOWN)
-	{
-		// zoom_out(gui);;
-	}
+		return (zoom(gui, 1.1));
+		// return (0);
+	if (button == BUTTON_SCROLL_DOWN)
+		return (zoom(gui, 1 / 1.1));
+		// return (0);
 	else
 		printf("unknown button: %i\n", button);
 	return (0);
@@ -243,9 +292,10 @@ int	button_hook(int button, t_gui *gui)
 
 int	main(void)
 {
+	t_gui	gui;
+	printf("gui: %p\n", &gui);
 
-	t_gui gui = create_gui(1400, 800, "test");
-	// mlx_loop_hook(gui.mlx)
+	gui = create_gui(1400, 800, "test");
 	mlx_hook(gui.window, CROSS_PRESS, CROSS_PRESS_MASK, close_hook, NULL);
 	mlx_hook(gui.window, KEY_PRESS, KEY_PRESS_MASK, key_hook, &gui);
 	mlx_hook(gui.window, BUTTON_PRESS, BUTTON_PRESS_MASK, button_hook, &gui);
