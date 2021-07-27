@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:39:14 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/22 18:10:04 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/26 20:37:06 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,26 @@ t_gui	create_gui(int width, int height, char *title)
 	gui.window = mlx_new_window(gui.mlx, width, height, title);
 	gui.do_redraw = 1;
 	gui.is_redrawing = 0;
-	gui.zoom = 1;
-	gui.x_pos = -0.75;
-	gui.y_pos = 0;
+	init_fractal(&gui);
 	return (gui);
+}
+
+void	init_fractal(t_gui *gui)
+{
+	t_fractal	f;
+
+	f.zoom = 1;
+	f.from_x = -2.5;
+	f.to_x = 1;
+	f.from_y = -1;
+	f.to_y = 1;
+	f.x_pos = (f.from_x + f.to_x) / 2;
+	f.y_pos = (f.from_y + f.to_y) / 2;
+	f.x_size = fabs(f.to_x - f.from_x);
+	f.y_size = fabs(f.to_y - f.from_y);
+	f.scalar = fmax(f.x_size / gui->canvas.width,
+			f.y_size / gui->canvas.height);
+	gui->fractal = f;
 }
 
 char	*gui_get_pixel_data(t_canvas *canvas, size_t x, size_t y)
@@ -100,166 +116,9 @@ t_color	pallette(int i, int max_i)
 	return (rgb_from_hue(i));
 }
 
-/*void	draw_image(t_gui *gui)
-{
-	const double	x_scalar = 3.5 / gui->canvas.width;
-	const double	y_scalar = 2.0 / gui->canvas.height;
-
-
-
-
-
-	int	px;
-	int	py;
-	double	x0;
-	double	y0;
-
-	double	x;
-	double	y;
-	double	x2;
-	double	y2;
-	int		i;
-	const int	max_i = 1024;
-	t_color	color;
-
-	py = 0;
-	while (py < gui->canvas.height)
-	{
-		y0 = (double)py * fmax(x_scalar, y_scalar) - 1;
-		px = 0;
-		while (px < gui->canvas.width)
-		{
-			x0 = (double)px * fmax(x_scalar, y_scalar) - 2.5;
-
-
-			x = 0;
-			y = 0;
-
-			x2 = 0;
-			y2 = 0;
-
-			i = 0;
-			while (x2 + y2 <= 4 && i < max_i)
-			{
-				y = 2 * x * y + y0;
-				x = x2 - y2 + x0;
-				x2 = x * x;
-				y2 = y * y;
-				i++;
-			}
-			color = pallette(i, max_i);
-			gui_set_pixel(px, py, color, gui);
-
-
-			px++;
-		}
-		py++;
-	}
-}
-*/
-
-void	get_mouse_coords(t_gui *gui, double *x_out, double *y_out)
-{
-	const double	scalar = fmax(3.5 / gui->canvas.width, 2.0 / gui->canvas.height);
-	int				x;
-	int				y;
-
-	mlx_mouse_get_pos(gui->mlx, gui->window, &x, &y);
-	*x_out = gui->x_pos + (((double)x * scalar) - 1.75) * gui->zoom;
-	*y_out = gui->y_pos + (((double)y * scalar) - 1.0) * gui->zoom;
-}
-
-int	loop_hook(t_gui *gui)
-{
-	if (gui->do_redraw && !gui->is_redrawing)
-	{
-		gui->is_redrawing = 1;
-		gui->do_redraw = 0;
-		printf("will redraw\n");
-		// draw_image(gui);
-		draw_mandelbrot(gui, gui->x_pos, gui->y_pos, gui->zoom, 1024);
-		// draw_mandelbrot(gui, gui->x_pos, gui->y_pos, gui->zoom, 128);
-		mlx_put_image_to_window(gui->mlx, gui->window, gui->canvas.img, 0, 0);
-		printf("did redraw\n");
-		gui->is_redrawing = 0;
-	}
-	// double x, y;
-	// get_mouse_coords(gui, &x, &y);
-	// printf("x: %lf, y: %lf\t", x, y);
-	// int x0, y0;
-	// mlx_mouse_get_pos(gui->mlx, gui->window, &x0, &y0);
-	// printf("x0: %i, y0: %i\n", x0, y0);
-	return (0);
-}
-
-int	zoom(t_gui *gui, double amount)
-{
-	printf("zoom\n");
-	gui->zoom /= amount;
-	gui->do_redraw = 1;
-	return (0);
-}
-
-int	move(t_gui *gui, double x_amount, double y_amount)
-{
-	printf("move\n");
-	gui->x_pos += x_amount * gui->zoom;
-	gui->y_pos += y_amount * gui->zoom;
-	gui->do_redraw = 1;
-	return (0);
-}
-
-int	close_hook(void)
-{
-	exit(EXIT_SUCCESS);
-	return (0);
-}
-
-int	key_hook(int keycode, t_gui *gui)
-{
-	(void)gui;
-	if (keycode == KEY_ESC)
-		return (close_hook());
-	if (keycode == KEY_W)
-		return (zoom(gui, 1.1));
-	if (keycode == KEY_S)
-		return (zoom(gui, 1.0 / 1.1));
-	if (keycode == KEY_A)
-		return (zoom(gui, 3.0));
-	if (keycode == KEY_D)
-		return (zoom(gui, 1.0 / 3.0));
-	if (keycode == KEY_UP)
-		return (move(gui, 0, -0.1));
-	if (keycode == KEY_DOWN)
-		return (move(gui, 0, 0.1));
-	if (keycode == KEY_LEFT)
-		return (move(gui, -0.1, 0));
-	if (keycode == KEY_RIGHT)
-		return (move(gui, 0.1, 0));
-	printf("unknown key: %i (%c)\n", keycode, keycode);
-	return (0);
-}
-
-int	button_hook(int button, int _, int _2, t_gui *gui)
-{
-	(void)_, (void)_2;
-	printf("button: %i, gui: %p\n", button, gui);
-	(void)gui;
-	if (button == BUTTON_SCROLL_UP)
-		return (zoom(gui, 1.1));
-		// return (0);
-	if (button == BUTTON_SCROLL_DOWN)
-		return (zoom(gui, 1 / 1.1));
-		// return (0);
-	else
-		printf("unknown button: %i\n", button);
-	return (0);
-}
-
 int	main(void)
 {
 	t_gui	gui;
-	printf("gui: %p\n", &gui);
 
 	gui = create_gui(1400, 800, "test");
 	mlx_hook(gui.window, CROSS_PRESS, CROSS_PRESS_MASK, close_hook, NULL);

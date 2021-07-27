@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:48:35 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/22 16:49:01 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/26 16:04:54 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,36 @@ typedef struct s_canvas {
 	int		height;
 }	t_canvas;
 
+typedef struct s_fractal {
+	double	zoom;
+	double	x_pos;
+	double	y_pos;
+	double	scalar;
+	double	from_x;
+	double	from_y;
+	double	to_x;
+	double	to_y;
+	double	x_size;
+	double	y_size;
+}	t_fractal;
+
 typedef struct s_gui {
 	void		*mlx;
 	void		*window;
 	t_canvas	canvas;
 	int			do_redraw;
 	int			is_redrawing;
-	double		zoom;
-	double		x_pos;
-	double		y_pos;
+	t_fractal	fractal;
+	// double		zoom;
+	// double		x_pos;
+	// double		y_pos;
+	// double		scalar;
+	// double		from_x;
+	// double		from_y;
+	// double		to_x;
+	// double		to_y;
+	// double		x_size;
+	// double		y_size;
 }	t_gui;
 
 #endif

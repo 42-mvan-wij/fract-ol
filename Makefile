@@ -6,7 +6,7 @@
 #    By: mvan-wij <mvan-wij@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/06/28 14:05:04 by mvan-wij      #+#    #+#                  #
-#    Updated: 2021/07/22 17:32:58 by mvan-wij      ########   odam.nl          #
+#    Updated: 2021/07/26 20:35:58 by mvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,12 +31,12 @@ else
 LIBS += -framework OpenGL -framework AppKit
 endif
 HEADERS = libft/libft.h $(dir $(MINILIBX))/mlx.h src/constants.h src/defs.h
-SOURCES = src/fractol.c src/mandelbrot.c
+SOURCES = src/fractol.c src/mandelbrot_set.c src/julia_set.c src/hooks.c src/movement.c
 
 ifdef BONUS
-SOURCES +=
-HEADERS +=
-CFLAGS  +=
+SOURCES += src/complex.c src/multibrot_set.c
+HEADERS += src/bonus.h
+CFLAGS  += -DBONUS=
 LIBS    += -lpthread
 endif
 
