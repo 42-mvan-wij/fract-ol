@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/26 11:22:53 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/26 19:41:07 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/27 17:15:00 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,14 +67,35 @@ void	draw_julia(t_gui *gui, double c_x, double c_y, double x, double y, double z
 	py = 0;
 	while (py < gui->canvas.height)
 	{
-		y0 = y + (((double)py * gui->fractal.scalar) - gui->fractal.y_size / 2) * zoom;
+		y0 = y + (double)(py - gui->canvas.height / 2) * gui->fractal.scalar * zoom;
 		px = 0;
 		while (px < gui->canvas.width)
 		{
-			x0 = x + (((double)px * gui->fractal.scalar) - gui->fractal.x_size / 2) * zoom;
+			x0 = x + (double)(px - gui->canvas.width / 2) * gui->fractal.scalar * zoom;
 			gui_set_pixel(px, py, julia_escape(x0, y0, c_x, c_y, max_i), gui);
 			px++;
 		}
 		py++;
 	}
+}
+
+void	init_julia_set(t_gui *gui)
+{
+	t_fractal	f;
+
+	f.e_type = JULIA;
+	f.u_vars.c_re = -0.8;
+	f.u_vars.c_im = 0.156;
+	f.zoom = 1;
+	f.from_x = -1.5;
+	f.to_x = 1.5;
+	f.from_y = -1;
+	f.to_y = 1;
+	f.x_pos = (f.from_x + f.to_x) / 2;
+	f.y_pos = (f.from_y + f.to_y) / 2;
+	f.x_size = fabs(f.to_x - f.from_x);
+	f.y_size = fabs(f.to_y - f.from_y);
+	f.scalar = fmax(f.x_size / gui->canvas.width,
+			f.y_size / gui->canvas.height);
+	gui->fractal = f;
 }

@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:48:35 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/26 16:04:54 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/27 17:10:30 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,21 @@ typedef struct s_fractal {
 	double	to_y;
 	double	x_size;
 	double	y_size;
+	enum {
+		MANDELBROT,
+		JULIA,
+		MULTIBROT
+	}		e_type;
+	union {
+		struct {};
+		struct {
+			double	c_re;
+			double	c_im;
+		};
+		struct {
+			double	exp;
+		};
+	}		u_vars;
 }	t_fractal;
 
 typedef struct s_gui {
@@ -99,16 +114,6 @@ typedef struct s_gui {
 	int			do_redraw;
 	int			is_redrawing;
 	t_fractal	fractal;
-	// double		zoom;
-	// double		x_pos;
-	// double		y_pos;
-	// double		scalar;
-	// double		from_x;
-	// double		from_y;
-	// double		to_x;
-	// double		to_y;
-	// double		x_size;
-	// double		y_size;
 }	t_gui;
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/26 11:27:49 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/26 21:05:28 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/27 16:18:01 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 #include "bonus.h"
 
 #ifndef M_PI
-# define M_PI 3.1415926535
+# define M_PI 3.14159265358979323846264338327950288
 #endif
-#include <stdio.h>
 
 t_complex	complex_mult(t_complex a, t_complex b)
 {

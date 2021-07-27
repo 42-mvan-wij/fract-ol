@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:39:14 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/26 20:37:06 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/27 17:20:42 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,26 +43,7 @@ t_gui	create_gui(int width, int height, char *title)
 	gui.window = mlx_new_window(gui.mlx, width, height, title);
 	gui.do_redraw = 1;
 	gui.is_redrawing = 0;
-	init_fractal(&gui);
 	return (gui);
-}
-
-void	init_fractal(t_gui *gui)
-{
-	t_fractal	f;
-
-	f.zoom = 1;
-	f.from_x = -2.5;
-	f.to_x = 1;
-	f.from_y = -1;
-	f.to_y = 1;
-	f.x_pos = (f.from_x + f.to_x) / 2;
-	f.y_pos = (f.from_y + f.to_y) / 2;
-	f.x_size = fabs(f.to_x - f.from_x);
-	f.y_size = fabs(f.to_y - f.from_y);
-	f.scalar = fmax(f.x_size / gui->canvas.width,
-			f.y_size / gui->canvas.height);
-	gui->fractal = f;
 }
 
 char	*gui_get_pixel_data(t_canvas *canvas, size_t x, size_t y)
@@ -116,14 +97,72 @@ t_color	pallette(int i, int max_i)
 	return (rgb_from_hue(i));
 }
 
-int	main(void)
+int	parse_args(char *argv[], int argc, t_gui *gui)
+{
+	if (argc < 2)
+		return (0);
+	if (ft_strncmp(argv[1], "mandelbrot", 10) == 0)
+	{
+		*gui = create_gui(1400, 800, "Mandelbrot set");
+		init_mandelbrot_set(gui);
+	}
+	else if (ft_strncmp(argv[1], "julia", 5) == 0)
+	{
+		*gui = create_gui(1200, 900, "Julia set");
+		init_julia_set(gui);
+	}
+	else if (ft_strncmp(argv[1], "multibrot", 9) == 0)
+	{
+		*gui = create_gui(1500, 800, "Multibrot set");
+		init_multibrot_set(gui);
+	}
+	else
+		return (0);
+	return (1);
+}
+
+void	draw_fractal(t_gui *gui)
+{
+	if (gui->fractal.e_type == MANDELBROT)
+		draw_mandelbrot(gui, gui->fractal.x_pos, gui->fractal.y_pos, gui->fractal.zoom, 1024);
+	else if (gui->fractal.e_type == JULIA)
+		draw_julia(gui, gui->fractal.u_vars.c_re, gui->fractal.u_vars.c_im, gui->fractal.x_pos, gui->fractal.y_pos, gui->fractal.zoom, 1024);
+	else if (gui->fractal.e_type == MULTIBROT)
+		draw_multibrot(gui, gui->fractal.x_pos, gui->fractal.y_pos, gui->fractal.u_vars.exp, gui->fractal.zoom, 1024);
+}
+
+int	main(int argc, char *argv[])
 {
 	t_gui	gui;
 
-	gui = create_gui(1400, 800, "test");
+(void)argc;
+(void)argv;
+// 	if (argc == 1) // || !init_fractal(&gui, &argv[1])
+// 	{
+// 		printf("usage: \
+// %s <mandelbrot | julia | multibrot> [<fractal arguments>]\n\
+// Fractal arguments:\n\
+// \tMandelbrot Set: -\n\
+// \tJulia Set: <real> <imaginary>\n\
+// \tMultibrot Set: <exponent>\n", argv[0]);
+// 		exit(EXIT_SUCCESS);
+// 	}
+	// init_fractal(&gui, &argv[1]);
+	// gui = create_gui(1400, 800, "test");
+	if (!parse_args(argv, argc, &gui))
+	{
+		printf("usage: \
+%s <mandelbrot | julia | multibrot> [<fractal arguments>]\n\
+Fractal arguments:\n\
+\tMandelbrot Set: -\n\
+\tJulia Set: <real> <imaginary>\n\
+\tMultibrot Set: <exponent>\n", argv[0]);
+		return (EXIT_FAILURE);
+	}
 	mlx_hook(gui.window, CROSS_PRESS, CROSS_PRESS_MASK, close_hook, NULL);
 	mlx_hook(gui.window, KEY_PRESS, KEY_PRESS_MASK, key_hook, &gui);
 	mlx_hook(gui.window, BUTTON_PRESS, BUTTON_PRESS_MASK, button_hook, &gui);
 	mlx_loop_hook(gui.mlx, loop_hook, &gui);
 	mlx_loop(gui.mlx);
+	return (EXIT_SUCCESS);
 }

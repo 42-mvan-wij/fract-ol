@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/22 16:35:22 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/26 16:10:58 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/27 17:16:18 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,11 @@ int			key_hook(int keycode, t_gui *gui);
 int			button_hook(int button, int _, int _2, t_gui *gui);
 void		draw_mandelbrot(t_gui *gui, double x, double y, double zoom, int max_i);
 void		draw_julia(t_gui *gui, double c_x, double c_y, double x, double y, double zoom, int max_i);
+void		draw_multibrot(t_gui *gui, double x, double y, double d, double zoom, int max_i);
 void		init_fractal(t_gui *gui);
+void		init_mandelbrot_set(t_gui *gui);
+void		init_julia_set(t_gui *gui);
+void		init_multibrot_set(t_gui *gui);
+void		draw_fractal(t_gui *gui);
 
 #endif

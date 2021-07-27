@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/26 20:29:57 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/26 20:34:23 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/27 17:24:04 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,34 @@ void	draw_multibrot(t_gui *gui, double x, double y, double d, double zoom, int m
 	py = 0;
 	while (py < gui->canvas.height)
 	{
-		y0 = y + (((double)py * gui->fractal.scalar) - gui->fractal.y_size / 2) * zoom;
+		y0 = y + (double)(py - gui->canvas.height / 2) * gui->fractal.scalar * zoom;
 		px = 0;
 		while (px < gui->canvas.width)
 		{
-			x0 = x + (((double)px * gui->fractal.scalar) - gui->fractal.x_size / 2) * zoom;
+			x0 = x + (double)(px - gui->canvas.width / 2) * gui->fractal.scalar * zoom;
 			gui_set_pixel(px, py, multibrot_escape(x0, y0, d, max_i), gui);
 			px++;
 		}
 		py++;
 	}
+}
+
+void	init_multibrot_set(t_gui *gui)
+{
+	t_fractal	f;
+
+	f.e_type = MULTIBROT;
+	f.u_vars.exp = 2;
+	f.zoom = 1;
+	f.from_x = -2.5;
+	f.to_x = 2.5;
+	f.from_y = -1;
+	f.to_y = 1;
+	f.x_pos = (f.from_x + f.to_x) / 2;
+	f.y_pos = (f.from_y + f.to_y) / 2;
+	f.x_size = fabs(f.to_x - f.from_x);
+	f.y_size = fabs(f.to_y - f.from_y);
+	f.scalar = fmax(f.x_size / gui->canvas.width,
+			f.y_size / gui->canvas.height);
+	gui->fractal = f;
 }

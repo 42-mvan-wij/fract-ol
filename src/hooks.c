@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/26 11:18:45 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/26 21:18:24 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/27 17:17:46 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// #ifdef BONUS
-# include "bonus.h"
-// #endif
-
 int	loop_hook(t_gui *gui)
 {
 	if (gui->do_redraw && !gui->is_redrawing)
@@ -27,21 +23,10 @@ int	loop_hook(t_gui *gui)
 		gui->is_redrawing = 1;
 		gui->do_redraw = 0;
 		printf("will redraw\n");
-		// draw_multibrot(gui, gui->fractal.x_pos, gui->fractal.y_pos, 0.6, gui->fractal.zoom, 1024);
-		draw_multibrot(gui, gui->fractal.x_pos, gui->fractal.y_pos, -2, gui->fractal.zoom, 128);
-		// draw_julia(gui, -0.8, 0.156, gui->fractal.x_pos, gui->fractal.y_pos, gui->fractal.zoom, 1024);
-		// draw_julia(gui, -0.8, 0.156, gui->fractal.x_pos, gui->fractal.y_pos, gui->fractal.zoom, 128);
-		// draw_mandelbrot(gui, gui->fractal.x_pos, gui->fractal.y_pos, gui->fractal.zoom, 1024);
-		// draw_mandelbrot(gui, gui->fractal.x_pos, gui->fractal.y_pos, gui->fractal.zoom, 128);
+		draw_fractal(gui);
 		mlx_put_image_to_window(gui->mlx, gui->window, gui->canvas.img, 0, 0);
 		printf("did redraw\n");
 		gui->is_redrawing = 0;
-		// t_complex z = {-0.35, 1.3};
-		// t_complex a = complex_pow(z, 0.6);
-		// printf("ye: %lf, %lf\n", a.re, a.im);
-		// z.im *= -1;
-		// a = complex_pow(z, 0.6);
-		// printf("ne: %lf, %lf\n", a.re, a.im);
 	}
 	return (0);
 }
