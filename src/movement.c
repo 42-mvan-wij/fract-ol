@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/26 15:39:44 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/28 14:23:21 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/28 16:17:22 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,17 @@
 
 #ifdef __APPLE__
 
-int	get_mouse_pos(t_gui *gui, int *x, int *y)
+static int	get_mouse_pos(t_gui *gui, int *x, int *y)
 {
-	return (mlx_mouse_get_pos(gui->window, x, y));
+	const int	ret = mlx_mouse_get_pos(gui->window, x, y);
+
+	*y -= 20;
+	return (ret);
 }
 
 #else
 
-int	get_mouse_pos(t_gui *gui, int *x, int *y)
+static int	get_mouse_pos(t_gui *gui, int *x, int *y)
 {
 	return (mlx_mouse_get_pos(gui->mlx, gui->window, x, y));
 }
@@ -41,16 +44,16 @@ int	zoom(t_gui *gui, double amount)
 	printf("zoom\n");
 	if (ZOOM_AT_MOUSE)
 	{
-	get_mouse_pos(gui, &mx, &my);
+		get_mouse_pos(gui, &mx, &my);
 		if (mx >= 0 && mx < gui->canvas.width
-		&& my >= 0 && my < gui->canvas.height)
-	{
-		x = gui->fractal.x_pos + gui->fractal.scalar * gui->fractal.zoom
-			* (mx - gui->canvas.width / 2);
-		y = gui->fractal.y_pos + gui->fractal.scalar * gui->fractal.zoom
-			* (my - gui->canvas.height / 2);
-		gui->fractal.x_pos += (x - gui->fractal.x_pos) * (1 - 1 / amount);
-		gui->fractal.y_pos += (y - gui->fractal.y_pos) * (1 - 1 / amount);
+			&& my >= 0 && my < gui->canvas.height)
+		{
+			x = gui->fractal.x_pos + gui->fractal.scalar * gui->fractal.zoom
+				* (mx - gui->canvas.width / 2);
+			y = gui->fractal.y_pos + gui->fractal.scalar * gui->fractal.zoom
+				* (my - gui->canvas.height / 2);
+			gui->fractal.x_pos += (x - gui->fractal.x_pos) * (1 - 1 / amount);
+			gui->fractal.y_pos += (y - gui->fractal.y_pos) * (1 - 1 / amount);
 		}
 	}
 	gui->fractal.zoom /= amount;
