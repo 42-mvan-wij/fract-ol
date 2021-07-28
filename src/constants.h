@@ -6,12 +6,18 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:48:35 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/27 17:10:30 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/28 14:19:19 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CONSTANTS_H
 # define CONSTANTS_H
+
+# ifdef BONUS
+#  define BONUS_V 1
+# else
+#  define BONUS_V 0
+# endif
 
 # ifdef __APPLE__
 #  define KEY_PRESS 2
@@ -19,7 +25,8 @@
 #  define BUTTON_PRESS 4
 #  define BUTTON_PRESS_MASK 1
 #  define CROSS_PRESS 17
-#  define CROSS_PRESS_MASK 1 << 17
+#  define CROSS_PRESS_MASK 131072L
+//                         1L << 17
 
 #  define BUTTON_LEFT 1
 #  define BUTTON_RIGHT 2
@@ -40,7 +47,8 @@
 #  define KEY_PRESS 2
 #  define KEY_PRESS_MASK 1
 #  define BUTTON_PRESS 4
-#  define BUTTON_PRESS_MASK 1L<<2
+#  define BUTTON_PRESS_MASK 4L
+//                          1L << 2
 #  define CROSS_PRESS 33
 #  define CROSS_PRESS_MASK 0
 
@@ -90,6 +98,7 @@ typedef struct s_fractal {
 	double	to_y;
 	double	x_size;
 	double	y_size;
+	int		max_it;
 	enum {
 		MANDELBROT,
 		JULIA,

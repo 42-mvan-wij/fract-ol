@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:39:14 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/27 17:20:42 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/28 14:21:32 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,57 +46,6 @@ t_gui	create_gui(int width, int height, char *title)
 	return (gui);
 }
 
-char	*gui_get_pixel_data(t_canvas *canvas, size_t x, size_t y)
-{
-	return (&canvas->data[y * canvas->line_len + x * canvas->bpp / 8]);
-}
-
-void	gui_set_pixel(size_t x, size_t y, t_color color, t_gui *gui)
-{
-	char	*pixel_data;
-	int		bytes_per_pix;
-
-	pixel_data = gui_get_pixel_data(&gui->canvas, x, y);
-	if (gui->canvas.endian == 0)
-	{
-		pixel_data[0] = (uint8_t)color.b; // endian-ness
-		pixel_data[1] = (uint8_t)color.g;
-		pixel_data[2] = (uint8_t)color.r;
-		return ;
-	}
-	bytes_per_pix = gui->canvas.bpp / 8;
-	pixel_data[bytes_per_pix - 1] = (uint8_t)color.b;
-	pixel_data[bytes_per_pix - 2] = (uint8_t)color.g;
-	pixel_data[bytes_per_pix - 3] = (uint8_t)color.r;
-}
-
-t_color	rgb_from_hue(double hue)
-{
-	int		region;
-	double	ff;
-
-	region = floor(hue / 60);
-	ff = remainder(hue, 60) * 6;
-	if (region == 0)
-		return ((t_color){255.0, ff, 0.0});
-	if (region == 1)
-		return ((t_color){1.0 - ff, 255.0, 0.0});
-	if (region == 2)
-		return ((t_color){0.0, 255.0, ff});
-	if (region == 3)
-		return ((t_color){0.0, 1.0 - ff, 255.0});
-	if (region == 4)
-		return ((t_color){ff, 0.0, 255.0});
-	return ((t_color){255.0, 0.0, 1.0 - ff});
-}
-
-t_color	pallette(int i, int max_i)
-{
-	if (i == max_i)
-		return ((t_color){0, 0, 0});
-	return (rgb_from_hue(i));
-}
-
 int	parse_args(char *argv[], int argc, t_gui *gui)
 {
 	if (argc < 2)
@@ -113,52 +62,52 @@ int	parse_args(char *argv[], int argc, t_gui *gui)
 		*gui = create_gui(1200, 900, "Julia set");
 		return (init_julia_set(gui, &argv[2], argc - 2));
 	}
-	else if (ft_strncmp(argv[1], "multibrot", 9) == 0)
+	else if (BONUS_V && ft_strncmp(argv[1], "multibrot", 9) == 0)
 	{
 		if (argc < 3)
 			return (0);
 		*gui = create_gui(1500, 800, "Multibrot set");
 		return (init_multibrot_set(gui, &argv[2], argc - 2));
 	}
-		return (0);
+	return (0);
 }
 
 void	draw_fractal(t_gui *gui)
 {
 	if (gui->fractal.e_type == MANDELBROT)
-		draw_mandelbrot(gui, gui->fractal.x_pos, gui->fractal.y_pos, gui->fractal.zoom, 1024);
+		draw_mandelbrot(gui, gui->fractal.x_pos, gui->fractal.y_pos,
+			gui->fractal.zoom);
 	else if (gui->fractal.e_type == JULIA)
-		draw_julia(gui, gui->fractal.u_vars.c_re, gui->fractal.u_vars.c_im, gui->fractal.x_pos, gui->fractal.y_pos, gui->fractal.zoom, 1024);
-	else if (gui->fractal.e_type == MULTIBROT)
-		draw_multibrot(gui, gui->fractal.x_pos, gui->fractal.y_pos, gui->fractal.u_vars.exp, gui->fractal.zoom, 1024);
+		draw_julia(gui, gui->fractal.x_pos, gui->fractal.y_pos,
+			gui->fractal.zoom);
+	else if (BONUS_V && gui->fractal.e_type == MULTIBROT)
+		draw_multibrot(gui, gui->fractal.x_pos, gui->fractal.y_pos,
+			gui->fractal.zoom);
 }
 
 int	main(int argc, char *argv[])
 {
 	t_gui	gui;
 
-(void)argc;
-(void)argv;
-// 	if (argc == 1) // || !init_fractal(&gui, &argv[1])
-// 	{
-// 		printf("usage: \
-// %s <mandelbrot | julia | multibrot> [<fractal arguments>]\n\
-// Fractal arguments:\n\
-// \tMandelbrot Set: -\n\
-// \tJulia Set: <real> <imaginary>\n\
-// \tMultibrot Set: <exponent>\n", argv[0]);
-// 		exit(EXIT_SUCCESS);
-// 	}
-	// init_fractal(&gui, &argv[1]);
-	// gui = create_gui(1400, 800, "test");
 	if (!parse_args(argv, argc, &gui))
 	{
-		printf("usage: \
-%s <mandelbrot | julia | multibrot> [<fractal arguments>]\n\
+		if (BONUS_V)
+		{
+			printf("usage: \
+%s <mandelbrot | julia | multibrot> <fractal arguments> [max iterations]\n\
 Fractal arguments:\n\
 \tMandelbrot Set: -\n\
 \tJulia Set: <real> <imaginary>\n\
 \tMultibrot Set: <exponent>\n", argv[0]);
+		}
+		else
+		{
+			printf("usage: \
+%s <mandelbrot | julia> <fractal arguments> [max iterations]\n\
+Fractal arguments:\n\
+\tMandelbrot Set: -\n\
+\tJulia Set: <real> <imaginary>\n", argv[0]);
+		}
 		return (EXIT_FAILURE);
 	}
 	mlx_hook(gui.window, CROSS_PRESS, CROSS_PRESS_MASK, close_hook, NULL);
