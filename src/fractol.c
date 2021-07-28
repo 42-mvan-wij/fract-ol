@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:39:14 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/28 14:21:32 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/28 16:15:25 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,8 @@ int	parse_args(char *argv[], int argc, t_gui *gui)
 		*gui = create_gui(1200, 900, "Julia set");
 		return (init_julia_set(gui, &argv[2], argc - 2));
 	}
-	else if (BONUS_V && ft_strncmp(argv[1], "multibrot", 9) == 0)
-	{
-		if (argc < 3)
-			return (0);
-		*gui = create_gui(1500, 800, "Multibrot set");
-		return (init_multibrot_set(gui, &argv[2], argc - 2));
-	}
-	return (0);
+	else
+		return (parse_args_bonus(argv, argc, gui));
 }
 
 void	draw_fractal(t_gui *gui)
@@ -80,9 +74,8 @@ void	draw_fractal(t_gui *gui)
 	else if (gui->fractal.e_type == JULIA)
 		draw_julia(gui, gui->fractal.x_pos, gui->fractal.y_pos,
 			gui->fractal.zoom);
-	else if (BONUS_V && gui->fractal.e_type == MULTIBROT)
-		draw_multibrot(gui, gui->fractal.x_pos, gui->fractal.y_pos,
-			gui->fractal.zoom);
+	else
+		draw_fractal_bonus(gui);
 }
 
 int	main(int argc, char *argv[])
@@ -91,7 +84,7 @@ int	main(int argc, char *argv[])
 
 	if (!parse_args(argv, argc, &gui))
 	{
-		if (BONUS_V)
+		if (PRINT_BONUS_HELP)
 		{
 			printf("usage: \
 %s <mandelbrot | julia | multibrot> <fractal arguments> [max iterations]\n\

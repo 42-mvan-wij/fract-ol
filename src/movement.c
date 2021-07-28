@@ -39,8 +39,10 @@ int	zoom(t_gui *gui, double amount)
 	int		my;
 
 	printf("zoom\n");
+	if (ZOOM_AT_MOUSE)
+	{
 	get_mouse_pos(gui, &mx, &my);
-	if (BONUS_V && mx >= 0 && mx < gui->canvas.width
+		if (mx >= 0 && mx < gui->canvas.width
 		&& my >= 0 && my < gui->canvas.height)
 	{
 		x = gui->fractal.x_pos + gui->fractal.scalar * gui->fractal.zoom
@@ -49,6 +51,7 @@ int	zoom(t_gui *gui, double amount)
 			* (my - gui->canvas.height / 2);
 		gui->fractal.x_pos += (x - gui->fractal.x_pos) * (1 - 1 / amount);
 		gui->fractal.y_pos += (y - gui->fractal.y_pos) * (1 - 1 / amount);
+		}
 	}
 	gui->fractal.zoom /= amount;
 	gui->do_redraw = 1;

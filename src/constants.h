@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:48:35 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/28 14:19:19 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/28 16:15:19 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 # define CONSTANTS_H
 
 # ifdef BONUS
-#  define BONUS_V 1
+#  define ZOOM_AT_MOUSE 1
+#  define PRINT_BONUS_HELP 1
 # else
-#  define BONUS_V 0
+#  define ZOOM_AT_MOUSE 0
+#  define PRINT_BONUS_HELP 0
 # endif
 
 # ifdef __APPLE__

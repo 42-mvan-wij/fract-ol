@@ -31,7 +31,7 @@ else
 LIBS += -framework OpenGL -framework AppKit
 endif
 HEADERS = libft/libft.h $(dir $(MINILIBX))/mlx.h src/constants.h src/defs.h
-SOURCES = src/fractol.c src/mandelbrot_set.c src/julia_set.c src/hooks.c src/movement.c src/draw.c
+SOURCES = src/fractol.c src/mandelbrot_set.c src/julia_set.c src/hooks.c src/movement.c src/draw.c src/bonus.c
 
 ifdef BONUS
 SOURCES += src/complex.c src/multibrot_set.c

@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/22 16:35:22 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/28 14:14:07 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/28 15:43:31 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,7 @@ void		draw_fractal(t_gui *gui);
 char		*gui_get_pixel_data(t_canvas *canvas, size_t x, size_t y);
 void		gui_set_pixel(size_t x, size_t y, t_color color, t_gui *gui);
 t_color		pallette(int i, int max_i);
+void		draw_fractal_bonus(t_gui *gui);
+int			parse_args_bonus(char *argv[], int argc, t_gui *gui);
 
 #endif
