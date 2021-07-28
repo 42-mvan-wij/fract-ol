@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/26 11:22:53 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/27 17:15:00 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/28 14:15:22 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@
 #include <math.h>
 #include "constants.h"
 #include "defs.h"
+#include "libft.h"
 
-static t_color	julia_escape(double z_re, double z_im, double c_re, double c_im, int max_i)
+static t_color	julia_escape(double z_re, double z_im, t_gui *gui)
 {
 	double	x2;
 	double	y2;
@@ -35,29 +36,19 @@ static t_color	julia_escape(double z_re, double z_im, double c_re, double c_im, 
 	x2 = z_re * z_re;
 	y2 = z_im * z_im;
 	i = 0;
-	while (x2 + y2 <= 4 && i < max_i)
+	while (x2 + y2 <= 4 && i < gui->fractal.max_it)
 	{
-		// z² + c
-		// (a + bi)²
-		// a² + 2abi - b²
-		// (a² + b²; 2ab)
-
-		// (a + bi)³
-		// (a + bi)² * (a + bi)
-		// (a² + 2abi - b²) * (a + bi)
-		// (a³ + 2a²bi - ab² + a²bi - 2ab² - b³i)
-		// (a³ - 3ab²; 3a²b - b³)
-		z_im = (z_re + z_re) * z_im + c_im;
-		z_re = x2 - y2 + c_re;
+		z_im = (z_re + z_re) * z_im + gui->fractal.u_vars.c_im;
+		z_re = x2 - y2 + gui->fractal.u_vars.c_re;
 		x2 = z_re * z_re;
 		y2 = z_im * z_im;
 		i++;
 	}
-	return (pallette(i, max_i));
+	return (pallette(i, gui->fractal.max_it));
 }
 
 // z = z² + c (where z is each pixel)
-void	draw_julia(t_gui *gui, double c_x, double c_y, double x, double y, double zoom, int max_i)
+void	draw_julia(t_gui *gui, double x, double y, double zoom)
 {
 	int				px;
 	int				py;
@@ -67,25 +58,30 @@ void	draw_julia(t_gui *gui, double c_x, double c_y, double x, double y, double z
 	py = 0;
 	while (py < gui->canvas.height)
 	{
-		y0 = y + (double)(py - gui->canvas.height / 2) * gui->fractal.scalar * zoom;
+		y0 = y + gui->fractal.scalar * zoom * (py - gui->canvas.height / 2);
 		px = 0;
 		while (px < gui->canvas.width)
 		{
-			x0 = x + (double)(px - gui->canvas.width / 2) * gui->fractal.scalar * zoom;
-			gui_set_pixel(px, py, julia_escape(x0, y0, c_x, c_y, max_i), gui);
+			x0 = x + gui->fractal.scalar * zoom * (px - gui->canvas.width / 2);
+			gui_set_pixel(px, py, julia_escape(x0, y0, gui), gui);
 			px++;
 		}
 		py++;
 	}
 }
 
-void	init_julia_set(t_gui *gui)
+int	init_julia_set(t_gui *gui, char *args[], int argc)
 {
 	t_fractal	f;
 
+	if (argc < 2)
+		return (0);
 	f.e_type = JULIA;
-	f.u_vars.c_re = -0.8;
-	f.u_vars.c_im = 0.156;
+	f.u_vars.c_re = ft_atod(args[0]);
+	f.u_vars.c_im = ft_atod(args[1]);
+	f.max_it = 1024;
+	if (argc > 2)
+		f.max_it = ft_atoi(args[2]);
 	f.zoom = 1;
 	f.from_x = -1.5;
 	f.to_x = 1.5;
@@ -98,4 +94,5 @@ void	init_julia_set(t_gui *gui)
 	f.scalar = fmax(f.x_size / gui->canvas.width,
 			f.y_size / gui->canvas.height);
 	gui->fractal = f;
+	return (1);
 }

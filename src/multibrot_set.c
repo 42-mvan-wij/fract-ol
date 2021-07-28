@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/26 20:29:57 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/27 17:24:04 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2021/07/28 14:15:51 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 #include "constants.h"
 #include "defs.h"
 #include "bonus.h"
+#include "libft.h"
 
-static t_color	multibrot_escape(double x0, double y0, double d, int max_i)
+static t_color	multibrot_escape(double x0, double y0, t_gui *gui)
 {
 	t_complex	z;
 	int			i;
@@ -23,18 +24,18 @@ static t_color	multibrot_escape(double x0, double y0, double d, int max_i)
 	z.re = 0;
 	z.im = 0;
 	i = 0;
-	while (z.re * z.re + z.im * z.im <= 4 && i < max_i)
+	while (z.re * z.re + z.im * z.im <= 4 && i < gui->fractal.max_it)
 	{
-		z = complex_pow(z, d);
+		z = complex_pow(z, gui->fractal.u_vars.exp);
 		z.re += x0;
 		z.im += y0;
 		i++;
 	}
-	return (pallette(i, max_i));
+	return (pallette(i, gui->fractal.max_it));
 }
 
-// z = z² + c (where c is each pixel, and z starts at 0)
-void	draw_multibrot(t_gui *gui, double x, double y, double d, double zoom, int max_i)
+// z = z^a + c (where c is each pixel, and z starts at 0, a is a constant)
+void	draw_multibrot(t_gui *gui, double x, double y, double zoom)
 {
 	int				px;
 	int				py;
@@ -44,24 +45,29 @@ void	draw_multibrot(t_gui *gui, double x, double y, double d, double zoom, int m
 	py = 0;
 	while (py < gui->canvas.height)
 	{
-		y0 = y + (double)(py - gui->canvas.height / 2) * gui->fractal.scalar * zoom;
+		y0 = y + gui->fractal.scalar * zoom * (py - gui->canvas.height / 2);
 		px = 0;
 		while (px < gui->canvas.width)
 		{
-			x0 = x + (double)(px - gui->canvas.width / 2) * gui->fractal.scalar * zoom;
-			gui_set_pixel(px, py, multibrot_escape(x0, y0, d, max_i), gui);
+			x0 = x + gui->fractal.scalar * zoom * (px - gui->canvas.width / 2);
+			gui_set_pixel(px, py, multibrot_escape(x0, y0, gui), gui);
 			px++;
 		}
 		py++;
 	}
 }
 
-void	init_multibrot_set(t_gui *gui)
+int	init_multibrot_set(t_gui *gui, char *args[], int argc)
 {
 	t_fractal	f;
 
+	if (argc < 1)
+		return (0);
 	f.e_type = MULTIBROT;
-	f.u_vars.exp = 2;
+	f.u_vars.exp = ft_atod(args[0]);
+	f.max_it = 128;
+	if (argc > 1)
+		f.max_it = ft_atoi(args[1]);
 	f.zoom = 1;
 	f.from_x = -2.5;
 	f.to_x = 2.5;
@@ -74,4 +80,5 @@ void	init_multibrot_set(t_gui *gui)
 	f.scalar = fmax(f.x_size / gui->canvas.width,
 			f.y_size / gui->canvas.height);
 	gui->fractal = f;
+	return (1);
 }

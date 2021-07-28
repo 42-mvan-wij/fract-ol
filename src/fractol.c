@@ -104,21 +104,23 @@ int	parse_args(char *argv[], int argc, t_gui *gui)
 	if (ft_strncmp(argv[1], "mandelbrot", 10) == 0)
 	{
 		*gui = create_gui(1400, 800, "Mandelbrot set");
-		init_mandelbrot_set(gui);
+		return (init_mandelbrot_set(gui, &argv[2], argc - 2));
 	}
 	else if (ft_strncmp(argv[1], "julia", 5) == 0)
 	{
+		if (argc < 4)
+			return (0);
 		*gui = create_gui(1200, 900, "Julia set");
-		init_julia_set(gui);
+		return (init_julia_set(gui, &argv[2], argc - 2));
 	}
 	else if (ft_strncmp(argv[1], "multibrot", 9) == 0)
 	{
+		if (argc < 3)
+			return (0);
 		*gui = create_gui(1500, 800, "Multibrot set");
-		init_multibrot_set(gui);
+		return (init_multibrot_set(gui, &argv[2], argc - 2));
 	}
-	else
 		return (0);
-	return (1);
 }
 
 void	draw_fractal(t_gui *gui)
