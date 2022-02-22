@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/22 16:32:53 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/28 14:15:32 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/02/22 16:59:49 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	init_mandelbrot_set(t_gui *gui, char *args[], int argc)
 	t_fractal	f;
 
 	f.e_type = MANDELBROT;
-	f.max_it = 1024;
+	f.max_it = 128;
 	if (argc > 0)
 		f.max_it = ft_atoi(args[0]);
 	f.e_type = MANDELBROT;

@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:39:14 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/28 16:15:25 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/02/22 17:13:46 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,29 +78,30 @@ void	draw_fractal(t_gui *gui)
 		draw_fractal_bonus(gui);
 }
 
+#ifndef BONUS
+# define USAGE_TEXT "\
+ <mandelbrot | julia> <fractal arguments> [max iterations]\n\
+Fractal arguments:\n\
+\tMandelbrot Set: -\n\
+\tJulia Set: <real> <imaginary>\n"
+#else
+# define USAGE_TEXT "\
+ <mandelbrot | julia | multibrot> <fractal arguments> [max iterations]\n\
+Fractal arguments:\n\
+\tMandelbrot Set: -\n\
+\tJulia Set: <real> <imaginary>\n\
+\tMultibrot Set: <exponent>\n"
+#endif
+
 int	main(int argc, char *argv[])
 {
 	t_gui	gui;
 
 	if (!parse_args(argv, argc, &gui))
 	{
-		if (PRINT_BONUS_HELP)
-		{
-			printf("usage: \
-%s <mandelbrot | julia | multibrot> <fractal arguments> [max iterations]\n\
-Fractal arguments:\n\
-\tMandelbrot Set: -\n\
-\tJulia Set: <real> <imaginary>\n\
-\tMultibrot Set: <exponent>\n", argv[0]);
-		}
-		else
-		{
-			printf("usage: \
-%s <mandelbrot | julia> <fractal arguments> [max iterations]\n\
-Fractal arguments:\n\
-\tMandelbrot Set: -\n\
-\tJulia Set: <real> <imaginary>\n", argv[0]);
-		}
+		ft_putstr_fd("usage: ", STDOUT_FILENO);
+		ft_putstr_fd(argv[0], STDOUT_FILENO);
+		ft_putstr_fd(USAGE_TEXT, STDOUT_FILENO);
 		return (EXIT_FAILURE);
 	}
 	mlx_hook(gui.window, CROSS_PRESS, CROSS_PRESS_MASK, close_hook, NULL);

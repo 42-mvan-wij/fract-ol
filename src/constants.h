@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:48:35 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/28 16:15:19 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/02/22 16:51:32 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,8 @@
 
 # ifdef BONUS
 #  define ZOOM_AT_MOUSE 1
-#  define PRINT_BONUS_HELP 1
 # else
 #  define ZOOM_AT_MOUSE 0
-#  define PRINT_BONUS_HELP 0
 # endif
 
 # ifdef __APPLE__
@@ -107,7 +105,6 @@ typedef struct s_fractal {
 		MULTIBROT
 	}		e_type;
 	union {
-		struct {};
 		struct {
 			double	c_re;
 			double	c_im;
