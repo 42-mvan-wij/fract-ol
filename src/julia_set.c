@@ -6,19 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/26 11:22:53 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2022/02/22 17:08:01 by mvan-wij      ########   odam.nl         */
-/*                                                                            */
-/* ************************************************************************** */
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        ::::::::            */
-/*   mandelbrot.c                                       :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2021/07/22 16:32:53 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/22 18:00:33 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/03/14 17:43:42 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +15,11 @@
 #include "defs.h"
 #include "libft.h"
 
-static t_color	julia_escape(double z_re, double z_im, t_gui *gui)
+static t_color	julia_escape(long double z_re, long double z_im, t_gui *gui)
 {
-	double	x2;
-	double	y2;
-	int		i;
+	long double	x2;
+	long double	y2;
+	int			i;
 
 	x2 = z_re * z_re;
 	y2 = z_im * z_im;
@@ -48,12 +36,12 @@ static t_color	julia_escape(double z_re, double z_im, t_gui *gui)
 }
 
 // z = z² + c (where z is each pixel)
-void	draw_julia(t_gui *gui, double x, double y, double zoom)
+void	draw_julia(t_gui *gui, long double x, long double y, long double zoom)
 {
 	int				px;
 	int				py;
-	double			x0;
-	double			y0;
+	long double		x0;
+	long double		y0;
 
 	py = 0;
 	while (py < gui->canvas.height)
@@ -63,7 +51,7 @@ void	draw_julia(t_gui *gui, double x, double y, double zoom)
 		while (px < gui->canvas.width)
 		{
 			x0 = x + gui->fractal.scalar * zoom * (px - gui->canvas.width / 2);
-			gui_set_pixel(px, py, julia_escape(x0, y0, gui), gui);
+			gui_set_pixel(px, py, julia_escape(x0, -y0, gui), gui);
 			px++;
 		}
 		py++;
@@ -74,14 +62,16 @@ int	init_julia_set(t_gui *gui, char *args[], int argc)
 {
 	t_fractal	f;
 
-	if (argc < 2)
+	if (argc < 2 || argc > 3)
 		return (0);
 	f.e_type = JULIA;
-	f.u_vars.c_re = ft_atod(args[0]);
-	f.u_vars.c_im = ft_atod(args[1]);
+	if (!ft_atodl_strict(args[0], &f.u_vars.c_re))
+		return (0);
+	if (!ft_atodl_strict(args[1], &f.u_vars.c_im))
+		return (0);
 	f.max_it = 1024;
-	if (argc > 2)
-		f.max_it = ft_atoi(args[2]);
+	if (argc > 2 && !ft_atoi_strict(args[2], &f.max_it))
+		return (0);
 	f.zoom = 1;
 	f.from_x = -1.5;
 	f.to_x = 1.5;
@@ -89,9 +79,9 @@ int	init_julia_set(t_gui *gui, char *args[], int argc)
 	f.to_y = 1;
 	f.x_pos = (f.from_x + f.to_x) / 2;
 	f.y_pos = (f.from_y + f.to_y) / 2;
-	f.x_size = fabs(f.to_x - f.from_x);
-	f.y_size = fabs(f.to_y - f.from_y);
-	f.scalar = fmax(f.x_size / gui->canvas.width,
+	f.x_size = fabsl(f.to_x - f.from_x);
+	f.y_size = fabsl(f.to_y - f.from_y);
+	f.scalar = fmaxl(f.x_size / gui->canvas.width,
 			f.y_size / gui->canvas.height);
 	gui->fractal = f;
 	return (1);

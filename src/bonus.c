@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/28 15:38:33 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/28 15:44:58 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/03/14 17:17:44 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,9 @@ void	draw_fractal_bonus(t_gui *gui)
 
 int	parse_args_bonus(char *argv[], int argc, t_gui *gui)
 {
-	if (ft_strncmp(argv[1], "multibrot", 9) == 0)
+	if (ft_strncmp(argv[1], "multibrot", 10) == 0)
 	{
-		if (argc < 3)
-			return (0);
-		*gui = create_gui(1500, 800, "Multibrot set");
+		*gui = create_gui(1500, 800);
 		return (init_multibrot_set(gui, &argv[2], argc - 2));
 	}
 	return (0);

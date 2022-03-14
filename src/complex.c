@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/26 11:27:49 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2022/02/22 17:27:28 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/03/14 16:33:33 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 // 	return (r);
 // }
 
-t_complex	complex_from_angle(double a, double m)
+t_complex	complex_from_angle(long double a, long double m)
 {
 	t_complex	r;
 
@@ -35,15 +35,15 @@ t_complex	complex_from_angle(double a, double m)
 	return (r);
 }
 
-double	complex_sqr_mag(t_complex c)
+long double	complex_sqr_mag(t_complex c)
 {
 	return (c.re * c.re + c.im * c.im);
 }
 
-t_complex	complex_pow(t_complex c, double p)
+t_complex	complex_pow(t_complex c, long double p)
 {
-	const double	mag = sqrt(complex_sqr_mag(c));
-	double			angle;
+	const long double	mag = sqrt(complex_sqr_mag(c));
+	long double			angle;
 
 	if (mag == 0 || p == 1)
 		return (c);

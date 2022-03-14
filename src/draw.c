@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/28 14:13:09 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2021/07/28 14:14:44 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/03/14 17:41:26 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,13 @@ void	gui_set_pixel(size_t x, size_t y, t_color color, t_gui *gui)
 	pixel_data[bytes_per_pix - 3] = (uint8_t)color.r;
 }
 
-static t_color	rgb_from_hue(double hue)
+static t_color	rgb_from_hue(long double hue)
 {
-	int		region;
-	double	ff;
+	int			region;
+	long double	ff;
 
-	region = floor(hue / 60);
-	ff = remainder(hue, 60) * 6;
+	region = floorl(hue / 60);
+	ff = remainderl(hue, 60) * 6;
 	if (region == 0)
 		return ((t_color){255.0, ff, 0.0});
 	if (region == 1)

@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:48:35 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2022/02/22 16:51:32 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/03/14 17:46:17 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,9 @@
 # endif
 
 typedef struct s_color {
-	double	r;
-	double	g;
-	double	b;
+	long double	r;
+	long double	g;
+	long double	b;
 }	t_color;
 
 typedef struct s_canvas {
@@ -87,30 +87,32 @@ typedef struct s_canvas {
 	int		height;
 }	t_canvas;
 
+typedef enum e_fractal_type {
+	MANDELBROT,
+	JULIA,
+	MULTIBROT
+}	t_fractal_type;
+
 typedef struct s_fractal {
-	double	zoom;
-	double	x_pos;
-	double	y_pos;
-	double	scalar;
-	double	from_x;
-	double	from_y;
-	double	to_x;
-	double	to_y;
-	double	x_size;
-	double	y_size;
-	int		max_it;
-	enum {
-		MANDELBROT,
-		JULIA,
-		MULTIBROT
-	}		e_type;
+	long double		zoom;
+	long double		x_pos;
+	long double		y_pos;
+	long double		scalar;
+	long double		from_x;
+	long double		from_y;
+	long double		to_x;
+	long double		to_y;
+	long double		x_size;
+	long double		y_size;
+	int				max_it;
+	t_fractal_type	e_type;
 	union {
 		struct {
-			double	c_re;
-			double	c_im;
+			long double	c_re;
+			long double	c_im;
 		};
 		struct {
-			double	exp;
+			long double	exp;
 		};
 	}		u_vars;
 }	t_fractal;

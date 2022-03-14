@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/26 15:39:44 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2022/02/22 16:53:22 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/03/14 17:43:55 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,12 @@ static int	get_mouse_pos(t_gui *gui, int *x, int *y)
 
 #endif
 
-int	zoom(t_gui *gui, double amount)
+int	zoom(t_gui *gui, long double amount)
 {
-	double	x;
-	double	y;
-	int		mx;
-	int		my;
+	long double	x;
+	long double	y;
+	int			mx;
+	int			my;
 
 	if (ZOOM_AT_MOUSE)
 	{
@@ -60,7 +60,7 @@ int	zoom(t_gui *gui, double amount)
 	return (0);
 }
 
-int	move(t_gui *gui, double x_amount, double y_amount)
+int	move(t_gui *gui, long double x_amount, long double y_amount)
 {
 	gui->fractal.x_pos += x_amount * gui->fractal.zoom;
 	gui->fractal.y_pos += y_amount * gui->fractal.zoom;

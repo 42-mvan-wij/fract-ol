@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:39:14 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2022/02/22 17:13:46 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/03/14 17:50:04 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,44 +22,45 @@
 #include "libft.h"
 #include "defs.h"
 
-t_canvas	create_canvas(t_gui *gui, int width, int height)
-{
-	t_canvas	canvas;
-
-	canvas.img = mlx_new_image(gui->mlx, width, height);
-	canvas.width = width;
-	canvas.height = height;
-	canvas.data = mlx_get_data_addr(canvas.img, &canvas.bpp, &canvas.line_len,
-			&canvas.endian);
-	return (canvas);
-}
-
-t_gui	create_gui(int width, int height, char *title)
+t_gui	create_gui(int width, int height)
 {
 	t_gui	gui;
 
 	gui.mlx = mlx_init();
-	gui.canvas = create_canvas(&gui, width, height);
-	gui.window = mlx_new_window(gui.mlx, width, height, title);
+	gui.canvas.img = mlx_new_image(gui.mlx, width, height);
+	gui.canvas.width = width;
+	gui.canvas.height = height;
+	gui.canvas.data = mlx_get_data_addr(gui.canvas.img, &gui.canvas.bpp,
+			&gui.canvas.line_len, &gui.canvas.endian);
 	gui.do_redraw = 1;
 	gui.is_redrawing = 0;
 	return (gui);
+}
+
+void	create_window(t_gui *gui)
+{
+	static char	*title_table[] = {
+	[MANDELBROT] = "fract-ol: Mandelbrot set",
+	[JULIA] = "fract-ol: Julia set",
+	[MULTIBROT] = "fract-ol: Multibrot set",
+	};
+
+	gui->window = mlx_new_window(gui->mlx, gui->canvas.width,
+			gui->canvas.height, title_table[gui->fractal.e_type]);
 }
 
 int	parse_args(char *argv[], int argc, t_gui *gui)
 {
 	if (argc < 2)
 		return (0);
-	if (ft_strncmp(argv[1], "mandelbrot", 10) == 0)
+	if (ft_strncmp(argv[1], "mandelbrot", 11) == 0)
 	{
-		*gui = create_gui(1400, 800, "Mandelbrot set");
+		*gui = create_gui(1400, 800);
 		return (init_mandelbrot_set(gui, &argv[2], argc - 2));
 	}
-	else if (ft_strncmp(argv[1], "julia", 5) == 0)
+	else if (ft_strncmp(argv[1], "julia", 6) == 0)
 	{
-		if (argc < 4)
-			return (0);
-		*gui = create_gui(1200, 900, "Julia set");
+		*gui = create_gui(1200, 900);
 		return (init_julia_set(gui, &argv[2], argc - 2));
 	}
 	else
@@ -82,15 +83,15 @@ void	draw_fractal(t_gui *gui)
 # define USAGE_TEXT "\
  <mandelbrot | julia> <fractal arguments> [max iterations]\n\
 Fractal arguments:\n\
-\tMandelbrot Set: -\n\
-\tJulia Set: <real> <imaginary>\n"
+\tmandelbrot: -\n\
+\tjulia: <real> <imaginary>\n"
 #else
 # define USAGE_TEXT "\
  <mandelbrot | julia | multibrot> <fractal arguments> [max iterations]\n\
 Fractal arguments:\n\
-\tMandelbrot Set: -\n\
-\tJulia Set: <real> <imaginary>\n\
-\tMultibrot Set: <exponent>\n"
+\tmandelbrot: -\n\
+\tjulia: <real> <imaginary>\n\
+\tmultibrot: <exponent>\n"
 #endif
 
 int	main(int argc, char *argv[])
@@ -104,6 +105,7 @@ int	main(int argc, char *argv[])
 		ft_putstr_fd(USAGE_TEXT, STDOUT_FILENO);
 		return (EXIT_FAILURE);
 	}
+	create_window(&gui);
 	mlx_hook(gui.window, CROSS_PRESS, CROSS_PRESS_MASK, close_hook, NULL);
 	mlx_hook(gui.window, KEY_PRESS, KEY_PRESS_MASK, key_hook, &gui);
 	mlx_hook(gui.window, BUTTON_PRESS, BUTTON_PRESS_MASK, button_hook, &gui);
