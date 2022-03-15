@@ -6,7 +6,7 @@
 #    By: mvan-wij <mvan-wij@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/09/29 11:08:18 by mvan-wij      #+#    #+#                  #
-#    Updated: 2022/03/14 17:25:53 by mvan-wij      ########   odam.nl          #
+#    Updated: 2022/03/15 12:28:02 by mvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,11 +64,12 @@ OBJECTS = $(patsubst $(SRCDIR)/%,$(OBJDIR)/%, $(SOURCES:c=o))
 INCLUDES = $(sort $(addprefix -I,$(dir $(HEADERS))))
 
 PRE_RULES	:=
-ifneq ($(shell echo "$(CFLAGS)"), $(shell cat "$(DATA_FILE)" 2> /dev/null))
+ifneq ($(shell echo "$(sort $(CFLAGS))"), $(shell cat "$(DATA_FILE)" 2> /dev/null))
 PRE_RULES	+= clean
 endif
 
 print_prefix = printf "$(CYAN_FG)%-$(PROJECT_SPACING)s$(RESET_COLOR) $(GREEN_FG)%-$(RULE_SPACING)s$(RESET_COLOR) : " "[$(1)]" "$(2)"
+exec_no_nl = printf "$(1)"; $(1)
 
 .PHONY: all clean fclean re debug bonus
 
@@ -79,7 +80,7 @@ $(NAME): $(LIBFT) $(MINILIBX) $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) $(LIBS) -o $(NAME)
 	@$(call print_prefix,"$(PROJECT)","make")
 	@printf "$(BLUE_FG)$(NAME)$(RESET_COLOR) created\n"
-	@echo "$(CFLAGS)" > $(DATA_FILE)
+	@echo "$(sort $(CFLAGS))" > $(DATA_FILE)
 
 bonus:
 	@$(MAKE) BONUS=1
@@ -103,8 +104,8 @@ endif
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(HEADERS)
 	@mkdir -p $(@D)
 	@$(call print_prefix,"$(PROJECT)","make")
-	@printf "$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@$(CLEAR_REST_OF_LINE)\r"
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@$(call exec_no_nl,$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@)
+	@printf "$(CLEAR_REST_OF_LINE)\r"
 
 clean:
 	@$(call print_prefix,"$(PROJECT)","$@")
