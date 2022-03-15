@@ -35,6 +35,7 @@ void		init_fractal(t_gui *gui);
 int			init_mandelbrot_set(t_gui *gui, char *args[], int argc);
 int			init_julia_set(t_gui *gui, char *args[], int argc);
 int			init_multibrot_set(t_gui *gui, char *args[], int argc);
+int			init_julia_anim_set(t_gui *gui, char *args[], int argc);
 void		draw_fractal(t_gui *gui);
 char		*gui_get_pixel_data(t_canvas *canvas, size_t x, size_t y);
 void		gui_set_pixel(size_t x, size_t y, t_color color, t_gui *gui);

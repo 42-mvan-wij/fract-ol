@@ -21,6 +21,9 @@ void	draw_fractal_bonus(t_gui *gui)
 	if (gui->fractal.e_type == MULTIBROT)
 		draw_multibrot(gui, gui->fractal.x_pos, gui->fractal.y_pos,
 			gui->fractal.zoom);
+	if (gui->fractal.e_type == JULIA_ANIM)
+		draw_julia_anim(gui, gui->fractal.x_pos, gui->fractal.y_pos,
+			gui->fractal.zoom);
 }
 
 int	parse_args_bonus(char *argv[], int argc, t_gui *gui)
@@ -29,6 +32,11 @@ int	parse_args_bonus(char *argv[], int argc, t_gui *gui)
 	{
 		*gui = create_gui(1500, 800);
 		return (init_multibrot_set(gui, &argv[2], argc - 2));
+	}
+	if (ft_strncmp(argv[1], "julia_anim", 11) == 0)
+	{
+		*gui = create_gui(1200, 900);
+		return (init_julia_anim_set(gui, &argv[2], argc - 2));
 	}
 	return (0);
 }

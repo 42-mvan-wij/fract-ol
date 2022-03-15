@@ -42,7 +42,7 @@ CFLAGS	+=
 LIBS	+=
 else
 NAME	= $(NAME_BONUS)
-SOURCES += src/complex.c src/multibrot_set.c
+SOURCES += src/complex.c src/multibrot_set.c src/julia_set_anim.c
 HEADERS += src/bonus.h
 CFLAGS  += -DBONUS
 LIBS    +=

@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:48:35 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2022/03/14 17:46:17 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/03/15 12:50:10 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,10 @@
 #  define KEY_A 0
 #  define KEY_S 1
 #  define KEY_D 2
+#  define KEY_SPACE 49
 #  define KEY_UP 126
-#  define KEY_DOWN 125
 #  define KEY_LEFT 123
+#  define KEY_DOWN 125
 #  define KEY_RIGHT 124
 # else
 #  define KEY_PRESS 2
@@ -65,8 +66,9 @@
 #  define KEY_A 97
 #  define KEY_S 115
 #  define KEY_D 100
-#  define KEY_LEFT 65361
 #  define KEY_UP 65362
+#  define KEY_SPACE 32
+#  define KEY_LEFT 65361
 #  define KEY_DOWN 65364
 #  define KEY_RIGHT 65363
 # endif
@@ -90,7 +92,8 @@ typedef struct s_canvas {
 typedef enum e_fractal_type {
 	MANDELBROT,
 	JULIA,
-	MULTIBROT
+	MULTIBROT,
+	JULIA_ANIM
 }	t_fractal_type;
 
 typedef struct s_fractal {

@@ -43,6 +43,7 @@ void	create_window(t_gui *gui)
 	[MANDELBROT] = "fract-ol: Mandelbrot set",
 	[JULIA] = "fract-ol: Julia set",
 	[MULTIBROT] = "fract-ol: Multibrot set",
+	[JULIA_ANIM] = "fract-ol: Julia set (Animated)",
 	};
 
 	gui->window = mlx_new_window(gui->mlx, gui->canvas.width,

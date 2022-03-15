@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/26 11:18:45 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2022/02/22 16:53:09 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/03/15 12:47:36 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ int	key_hook(int keycode, t_gui *gui)
 		return (move(gui, -0.1, 0));
 	if (keycode == KEY_RIGHT)
 		return (move(gui, 0.1, 0));
+	if (keycode == KEY_SPACE)
+		return (move(gui, 0, 0));
 	return (0);
 }
 
