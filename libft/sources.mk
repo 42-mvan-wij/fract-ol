@@ -6,7 +6,7 @@
 #    By: mvan-wij <mvan-wij@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/22 17:36:28 by mvan-wij      #+#    #+#                  #
-#    Updated: 2022/03/14 16:39:06 by mvan-wij      ########   odam.nl          #
+#    Updated: 2022/03/16 13:32:16 by mvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,7 +64,8 @@ MEM_SRCS =							\
 	src/mem/ft_memset.c				\
 	src/mem/ft_free_and_nullify.c	\
 	src/mem/ft_free_arr.c			\
-	src/mem/ft_free_arr_n.c
+	src/mem/ft_free_arr_n.c			\
+	src/mem/ft_protect.c
 
 NBR_SRCS =						\
 	src/nbr/ft_atod_strict.c	\

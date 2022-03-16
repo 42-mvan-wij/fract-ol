@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/06/28 14:39:14 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2022/03/14 17:50:04 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:47:53 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,9 @@ t_gui	create_gui(int width, int height)
 {
 	t_gui	gui;
 
-	gui.mlx = mlx_init();
-	gui.canvas.img = mlx_new_image(gui.mlx, width, height);
+	gui.mlx = ft_protect(mlx_init());
 	gui.canvas.width = width;
 	gui.canvas.height = height;
-	gui.canvas.data = mlx_get_data_addr(gui.canvas.img, &gui.canvas.bpp,
-			&gui.canvas.line_len, &gui.canvas.endian);
 	gui.do_redraw = 1;
 	gui.is_redrawing = 0;
 	return (gui);
@@ -45,8 +42,8 @@ void	create_window(t_gui *gui)
 	[MULTIBROT] = "fract-ol: Multibrot set",
 	};
 
-	gui->window = mlx_new_window(gui->mlx, gui->canvas.width,
-			gui->canvas.height, title_table[gui->fractal.e_type]);
+	gui->window = ft_protect(mlx_new_window(gui->mlx, gui->canvas.width,
+				gui->canvas.height, title_table[gui->fractal.e_type]));
 }
 
 int	parse_args(char *argv[], int argc, t_gui *gui)

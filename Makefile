@@ -6,7 +6,7 @@
 #    By: mvan-wij <mvan-wij@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/09/29 11:08:18 by mvan-wij      #+#    #+#                  #
-#    Updated: 2022/03/15 12:28:02 by mvan-wij      ########   odam.nl          #
+#    Updated: 2022/03/16 13:43:23 by mvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ endif
 CC		= gcc
 CFLAGS	= -Wall -Wextra -Werror
 ifndef NO_SANITIZE
-CFLAGS	+= -fsanitize=address
+CFLAGS	+= -fsanitize=address -g3
 endif
 ifdef DEBUG
 CFLAGS	+= -g

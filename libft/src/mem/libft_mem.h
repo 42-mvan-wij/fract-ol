@@ -6,7 +6,7 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/27 14:53:00 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2022/02/15 19:53:30 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:31:54 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,6 @@ void	*ft_memset(void *b, int c, size_t len);
 void	*ft_free_arr(void *arr);
 void	*ft_free_and_nullify(void **ptr);
 void	*ft_free_arr_n(void *arr, size_t n);
+void	*ft_protect(void *ptr);
 
 #endif

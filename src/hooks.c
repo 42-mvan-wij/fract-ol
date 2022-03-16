@@ -6,13 +6,14 @@
 /*   By: mvan-wij <mvan-wij@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/07/26 11:18:45 by mvan-wij      #+#    #+#                 */
-/*   Updated: 2022/02/22 16:53:09 by mvan-wij      ########   odam.nl         */
+/*   Updated: 2022/03/16 13:44:54 by mvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "constants.h"
 #include "defs.h"
 #include "mlx.h"
+#include "libft.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -22,8 +23,13 @@ int	loop_hook(t_gui *gui)
 	{
 		gui->is_redrawing = 1;
 		gui->do_redraw = 0;
+		gui->canvas.img = ft_protect(mlx_new_image(
+					gui->mlx, gui->canvas.width, gui->canvas.height));
+		gui->canvas.data = mlx_get_data_addr(gui->canvas.img, &gui->canvas.bpp,
+				&gui->canvas.line_len, &gui->canvas.endian);
 		draw_fractal(gui);
 		mlx_put_image_to_window(gui->mlx, gui->window, gui->canvas.img, 0, 0);
+		mlx_destroy_image(gui->mlx, gui->canvas.img);
 		gui->is_redrawing = 0;
 	}
 	return (0);
