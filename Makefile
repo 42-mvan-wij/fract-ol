@@ -6,7 +6,7 @@
 #    By: mvan-wij <mvan-wij@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/03/16 16:35:47 by mvan-wij      #+#    #+#                  #
-#    Updated: 2022/03/16 17:51:14 by mvan-wij      ########   odam.nl          #
+#    Updated: 2022/03/17 17:36:28 by mvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,27 +16,27 @@ include utils.mk
 
 ################################################################################
 
-PROJECT		= fract-ol
-NAME		= fractol
-BONUS_NAME	= $(NAME)
+PROJECT		:= fract-ol
+NAME		:= fractol
+NAME_BONUS	:= fractol
 
-LIBFT		= libft/libft.a
-MINILIBX	= $(if $(IS_LINUX), minilibx-linux/libmlx.a, minilibx_mms_20200219/libmlx.dylib)
+LIBFT		:= libft/libft.a
+MINILIBX	:= $(if $(IS_LINUX), minilibx-linux/libmlx.a, minilibx_mms_20200219/libmlx.dylib)
 
-CC			= cc
-CFLAGS		= -Wall -Wextra -Werror $(if $(DEBUG), -g3) $(if $(SANITIZE), -fsanitize=address -g3)
+CC			:= cc
+CFLAGS		:= -Wall -Wextra -Werror $(if $(DEBUG), -g3) $(if $(SANITIZE), -fsanitize=address -g3)
 
 ################################################################################
 
 USER_LIBS += $(LIBFT) $(MINILIBX)
 SYSTEM_LIBS += m $(if $(IS_LINUX), X11 Xext)
-FRAMEWORKS = $(if $(IS_MAC), OpenGL AppKit)
-HEADERS =						\
+FRAMEWORKS += $(if $(IS_MAC), OpenGL AppKit)
+HEADERS :=						\
 	libft/libft.h				\
 	$(dir $(MINILIBX))/mlx.h	\
 	src/constants.h				\
 	src/defs.h
-SOURCES =					\
+SOURCES :=					\
 	src/fractol.c			\
 	src/mandelbrot_set.c	\
 	src/julia_set.c			\
@@ -48,7 +48,7 @@ SOURCES =					\
 ################################################################################
 
 ifdef BONUS
-NAME	= $(NAME_BONUS)
+NAME	:= $(NAME_BONUS)
 HEADERS +=				\
 	src/bonus.h
 SOURCES	+=				\
@@ -68,12 +68,14 @@ export CFLAGS := $(sort $(CFLAGS))
 export LIB_FLAGS := $(LIB_FLAGS)
 
 DATA_FILE := .make_data.txt
-MAKE_DATA := $(CFLAGS) $(LIB_FLAGS) $(INCLUDE_FLAGS)
+MAKE_DATA := $(CFLAGS) $(LIB_FLAGS) $(INCLUDE_FLAGS) $(sort $(OBJECTS))
 ifneq ($(shell echo $(MAKE_DATA)), $(shell cat "$(DATA_FILE)" 2> /dev/null))
-PRE_RULES += clean
+PRE_RULES := clean
 endif
 
 ################################################################################
+
+all: $(PRE_RULES) $(NAME)
 
 $(NAME): $(LIBFT) $(MINILIBX) $(OBJECTS)
 	@$(call print_prefix,"$(PROJECT)","make")
@@ -115,10 +117,12 @@ clean:
 fclean: clean
 	@$(call print_prefix,"$(PROJECT)","$@")
 	rm -f $(NAME)
+	@$(call print_prefix,"$(PROJECT)","$@")
+	rm -f $(DATA_FILE)
 	@$(MAKE) -C $(dir $(LIBFT)) fclean
 
 re: fclean all
 
-.PHONY: bonus debug clean fclean re
+.PHONY: all bonus debug clean fclean re
 
 ################################################################################
